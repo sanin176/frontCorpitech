@@ -3,7 +3,7 @@ import {Button, Form} from "react-bootstrap";
 import {Redirect} from "react-router-dom";
 import MyToast from "./MyToast";
 import "../Style/style.css";
-import "../Style/styleAutorization.css";
+import "../Style/autorization.css";
 import axios from 'axios';
 import {connect} from "react-redux";
 
@@ -42,18 +42,13 @@ class Autorization extends Component {
                     localStorage.setItem('loggedIn', true);
                     // this.messageMyToast("Login successful", "success");
                 } else {
-                    this.messageMyToast("Error with sign in", "error");
+                    this.messageMyToast("Данных в БД нет", "error");
                 }
             }).catch((error) => {
-            this.messageMyToast("Error with sign in", "error");
+            this.messageMyToast("Ошибка при входе", "error");
             console.error("Error here - " + error);
         });
     };
-
-    // componentWillUnmount() {
-    //     // clearTimeout(this.in)
-    //     this.setState({show: false});
-    // }
 
     handleSubmit = (e) => {
         const emailReg = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/;
@@ -61,7 +56,7 @@ class Autorization extends Component {
         if (this.state.login.match(emailReg) !== null) {
             this.loginCheck();
         } else {
-            this.messageMyToast("Error with sign in", "error");
+            this.messageMyToast("Ошибка при входе", "error");
         }
     };
 
@@ -90,15 +85,11 @@ class Autorization extends Component {
             this.props.loggedIn ?
 
                 <div>
-                    <Redirect to="/otvet"/>
+                    <Redirect to="/customers"/>
                 </div>
                 :
                 <div className="jumbotron widthForm mx-auto page pageBasic">
                     {this.state.show ?
-                        // <div style={{"display": this.state.showToast ? "block" : "none"}}>
-                        //     <MyToast show={this.state.show} type={this.state.typeMessage}
-                        //              message={this.state.textMessage}/>
-                        // </div>
                         <MyToast show={this.state.show} type={this.state.typeMessage}
                                  message={this.state.textMessage}/>
                         :

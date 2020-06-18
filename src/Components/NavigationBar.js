@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Navbar, Nav, NavDropdown} from "react-bootstrap";
 import {Link} from 'react-router-dom';
 import {connect} from "react-redux";
-import "../Style/styleNavigationBar.css"
+import "../Style/navigationBar.css"
 
 class NavigationBar extends Component {
 
@@ -23,9 +23,9 @@ class NavigationBar extends Component {
 
     render() {
         return (
-            <Navbar bg="dark" expand="lg" variant="dark">
+            <Navbar bg="dark" expand="lg" variant="dark" fixed="top">
                 <Navbar.Brand>
-                    <Link to={""} className="navbar-brand">
+                    <Link to={"/customers"} className="navbar-brand">
                         Corpitech
                     </Link>
                 </Navbar.Brand>
@@ -37,14 +37,14 @@ class NavigationBar extends Component {
                         this.props.loggedIn &&
                         <Nav className="mr-auto">
                             <NavDropdown title="Клиенты" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="add">Клиенты</NavDropdown.Item>
-                                <NavDropdown.Item href="add">Добавить Клиента</NavDropdown.Item>
+                                <NavDropdown.Item href="customers">Клиенты</NavDropdown.Item>
+                                <NavDropdown.Item href="addCustomer">Добавить Клиента</NavDropdown.Item>
+                            </NavDropdown>
+                            <NavDropdown title="Пользователи" id="basic-nav-dropdown">
+                                <NavDropdown.Item href="users">Пользователи</NavDropdown.Item>
+                                <NavDropdown.Item href="addUser">Добавить Пользователя</NavDropdown.Item>
                             </NavDropdown>
                             <NavDropdown.Divider/>
-                            <NavDropdown title="Пользователи" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="add">Пользхователи</NavDropdown.Item>
-                                <NavDropdown.Item href="add">Добавить Пользователя</NavDropdown.Item>
-                            </NavDropdown>
                         </Nav>
                     }
                     <Nav className="ml-auto" id="nameLogout">
