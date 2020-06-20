@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import "../../Style/style.css"
 import axios from "axios"
-import {ButtonGroup, Button} from "react-bootstrap";
+import {ButtonGroup, Button, Form} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit, faTrash} from '@fortawesome/free-solid-svg-icons'
 import {Link} from "react-router-dom";
@@ -23,19 +23,21 @@ export default class ReadDeleteUpdateUsers extends Component {
             isActive: false,
             typeMessage: "",
             textMessage: "",
-            show: false
+            show: false,
+            filter: ""
         };
 
         this.handlePageClick = this.handlePageClick.bind(this);
+        this.customerChange = this.customerChange.bind(this);
     }
 
     componentDidMount() {
-        this.getAllUsers(this.state.numberPage);
-        this.getNumberRecords();
+        this.getAllUsers(this.state.numberPage, "");
+        this.getNumberRecords("");
     }
 
-    getNumberRecords = () => {
-        axios.get('http://localhost:8080/numberRecordsUsers')
+    getNumberRecords = (textFilter) => {
+        axios.get('http://localhost:8080/numberRecordsUsers/?filter=' + textFilter)
             .then(response => {
                 if (response.data[0].numberRecordsUsers / 10 > 1)
                     this.setState({pageCount: response.data[0].numberRecordsUsers / 10});
@@ -44,8 +46,9 @@ export default class ReadDeleteUpdateUsers extends Component {
         });
     };
 
-    getAllUsers = (number) => {
-        axios.get('http://localhost:8080/users/' + number)
+    getAllUsers = (number, textFilter) => {
+        console.log('http://localhost:8080/users/' + number + '/?filter=' + textFilter);
+        axios.get('http://localhost:8080/users/' + number + '/?filter=' + textFilter)
             .then(response => {
                 this.setState({users: response.data});
             })
@@ -105,12 +108,33 @@ export default class ReadDeleteUpdateUsers extends Component {
 
     handlePageClick = (data) => {
         this.setState({numberPage: data.selected});
-        this.getAllUsers(data.selected);
+        this.getAllUsers(data.selected, this.state.filter);
+    };
+
+    customerChange = event => {
+        this.setState({
+            [event.target.name]: event.target.value
+        });
+        this.setState({numberPage: 0});
+        this.getNumberRecords(event.target.value);
+        this.getAllUsers(0, event.target.value);
     };
 
     render() {
         return (
             <div className="page">
+
+                <Form.Label>Фильтрация</Form.Label>
+                <Form.Control required
+                              type="test"
+                              name="filter"
+                              value={this.state.filter}
+                              onChange={this.customerChange}
+                              className={"bg-light text-primary filter"}
+                              placeholder="Фильтрация"/>
+
+                <div className="h1Text">Пользователи</div>
+
                 {this.state.users.length !== 0 ?
                     <div>
                         {this.state.show ?
@@ -123,10 +147,10 @@ export default class ReadDeleteUpdateUsers extends Component {
                         <table className="table">
                             <thead className="text-center">
                             <tr>
-                                <th>Action</th>
-                                <th>login</th>
-                                <th>name</th>
-                                <th>isActive</th>
+                                <th>Действия</th>
+                                <th>Логин</th>
+                                <th>Имя</th>
+                                <th>Статус</th>
                             </tr>
                             </thead>
                             <tbody className="text-center">

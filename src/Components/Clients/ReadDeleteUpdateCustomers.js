@@ -7,7 +7,6 @@ import {faList, faEdit, faTrash} from '@fortawesome/free-solid-svg-icons'
 import {Link} from "react-router-dom";
 import ReactPaginate from 'react-paginate';
 import MyToast from "../MyToast";
-import "../../Style/ReadDeleteUpdateCustomers.css"
 
 export default class ReadDeleteUpdateCustomers extends Component {
     constructor(props) {
@@ -37,12 +36,12 @@ export default class ReadDeleteUpdateCustomers extends Component {
     }
 
     componentDidMount() {
-        this.getAllCustomers(this.state.numberPage);
-        this.getNumberRecords();
+        this.getAllCustomers(this.state.numberPage, "");
+        this.getNumberRecords("");
     }
 
-    getNumberRecords = () => {
-        axios.get('http://localhost:8080/numberRecordsCustomers')
+    getNumberRecords = (textFilter) => {
+        axios.get('http://localhost:8080/numberRecordsCustomers/?filter=' + textFilter)
             .then(response => {
                 if (response.data[0].numberRecordsCustomers / 10 > 1)
                     this.setState({pageCount: response.data[0].numberRecordsCustomers / 10});
@@ -51,8 +50,8 @@ export default class ReadDeleteUpdateCustomers extends Component {
         });
     };
 
-    getAllCustomers = (number) => {
-        axios.get('http://localhost:8080/customers/' + number)
+    getAllCustomers = (number, textFilter) => {
+        axios.get('http://localhost:8080/customers/' + number + '/?filter=' + textFilter)
             .then(response => {
                 this.setState({customers: response.data});
             })
@@ -116,29 +115,35 @@ export default class ReadDeleteUpdateCustomers extends Component {
 
     handlePageClick = (data) => {
         this.setState({numberPage: data.selected});
-        this.getAllCustomers(data.selected);
+        this.getAllCustomers(data.selected, this.state.filter);
     };
 
     customerChange = event => {
         this.setState({
             [event.target.name]: event.target.value
         });
-        console.log(this.state.filter);
+        this.setState({numberPage: 0});
+        this.getNumberRecords(event.target.value);
+        this.getAllCustomers(0, event.target.value);
     };
 
     render() {
         return (
             <div className="page">
+
+                <Form.Label>Фильтрация</Form.Label>
+                <Form.Control required
+                              type="test"
+                              name="filter"
+                              value={this.state.filter}
+                              onChange={this.customerChange}
+                              className={"bg-light text-primary filter"}
+                              placeholder="Фильтрация"/>
+
+                <div className="h1Text">Клиенты</div>
+
                 {this.state.customers.length !== 0 ?
                     <div>
-                        <Form.Label>Фильтрация</Form.Label>
-                        <Form.Control required
-                                      type="test"
-                                      name="filter"
-                                      value={this.state.filter}
-                                      onChange={this.customerChange}
-                                      className={"bg-light text-primary filter"}
-                                      placeholder="Фильтрация"/>
 
                         {this.state.show ?
                             <MyToast show={this.state.show} type={this.state.typeMessage}
@@ -150,14 +155,14 @@ export default class ReadDeleteUpdateCustomers extends Component {
                         <table className="table">
                             <thead className="text-center">
                             <tr>
-                                <th>Action</th>
-                                <th>organization</th>
-                                <th>fio</th>
+                                <th>Действия</th>
+                                <th>Организация</th>
+                                <th>Имя</th>
                                 <th>email</th>
-                                <th>dateFrom</th>
-                                <th>dateTo</th>
-                                <th>maxSeatCount</th>
-                                <th>used</th>
+                                <th>Действует с</th>
+                                <th>Действует по</th>
+                                <th>Кол-во лицензий</th>
+                                <th>Использовано</th>
                             </tr>
                             </thead>
                             <tbody className="text-center">

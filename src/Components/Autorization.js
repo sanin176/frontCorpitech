@@ -27,19 +27,19 @@ class Autorization extends Component {
 
     loginCheck = () => {
         const user = {
-            login: this.state.login,
-            passwordHash: this.state.password
+            username: this.state.login,
+            password: this.state.password
         };
 
         console.log(user);
 
-        axios.post('http://localhost:8080/checkLogin', user)
+        axios.post('http://localhost:8080/authenticate', user)
             .then(response => {
                 if (response.data != null) {
-                    console.log(response.data.name);
-                    this.props.dispatch({type: 'SET_LOGGED_IN', loggedIn: true});
-                    localStorage.setItem('userName', response.data.name);
-                    localStorage.setItem('loggedIn', true);
+                    console.log(response.data);
+                    // this.props.dispatch({type: 'SET_LOGGED_IN', loggedIn: true});
+                    // localStorage.setItem('userName', response.data.name);
+                    // localStorage.setItem('loggedIn', true);
                     // this.messageMyToast("Login successful", "success");
                 } else {
                     this.messageMyToast("Данных в БД нет", "error");
